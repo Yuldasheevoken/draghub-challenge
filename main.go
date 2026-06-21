@@ -40,14 +40,12 @@ func handleWebSocket(w http.ResponseWriter, r *http.Request) {
 	} else {
 		log.Println("Sinfdosh (Foydalanuvchi) ulandi!")
 		for {
-			// Kadrlarni matn (Base64 string) ko'rinishida o'qiymiz
 			messageType, message, err := conn.ReadMessage()
 			if err != nil {
 				log.Println("Sinfdosh uzildi.")
 				break
 			}
 
-			// Agar admin oynasi ochiq bo'lsa, srazu unga otamiz
 			if adminClient != nil {
 				err = adminClient.WriteMessage(messageType, message)
 				if err != nil {
@@ -59,14 +57,13 @@ func handleWebSocket(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
-	// Statik HTML va video fayllarni server orqali tarqatish
 	http.Handle("/", http.FileServer(http.Dir("./")))
 	http.HandleFunc("/ws", handleWebSocket)
 
-	// Render.com yoki boshqa internet xostinglar uchun portni dinamik olish
+	// Render xosting uchun portni dinamik olish
 	port := os.Getenv("PORT")
 	if port == "" {
-		port = "8080" // Agar kompyuterda (lokalda) ishga tushsa, 8080 portni oladi
+		port = "8080" 
 	}
 
 	fmt.Println("Server ishga tushdi, port:", port)
